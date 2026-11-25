@@ -1,0 +1,245 @@
+<template>
+<style>
+#root{position:absolute;inset:0;overflow:hidden;font-family:'Inter',sans-serif}
+#root *{box-sizing:border-box}
+.__ID__-w{position:absolute;display:none;opacity:0}
+.__ID__-g{position:absolute;left:0;top:0;transform-origin:0 0;background:rgba(255,255,255,.72);border:2px solid #fff;border-radius:26px;box-shadow:0 12px 36px rgba(20,20,40,.28);color:#1d1d1f;overflow:hidden}
+.__ID__-t{position:absolute;white-space:nowrap}
+.__ID__-star{flex:none;display:block}
+.__ID__-bars{position:absolute;left:20px;right:20px;top:66px;height:150px;display:flex;align-items:flex-end;gap:10px}
+.__ID__-bar{display:block;flex:1;border-radius:6px;background:linear-gradient(#FF9A3C,#E5392B);transform-origin:50% 100%}
+.__ID__-clamp{font-weight:700;line-height:1.2;color:#555;font-size:28px;white-space:normal}
+</style>
+<div id="root" data-composition-id="__ID__" data-start="0" data-duration="@@DUR@@" data-width="1080" data-height="1920">
+ <div id="__ID__-clip" class="clip" data-start="0" data-duration="@@DUR@@" style="position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden">
+
+  <!-- a: бренд + большое число -->
+  <div id="__ID__-w-a" class="__ID__-w"><div id="__ID__-g-a" class="__ID__-g">
+   <div style="position:absolute;left:20px;top:16px;right:20px;display:flex;align-items:center;gap:10px">
+    <svg class="__ID__-star" width="36" height="36" viewBox="0 0 100 100"><g stroke="#D97757" stroke-width="12" stroke-linecap="round"><line x1="50" y1="8" x2="50" y2="92" transform="rotate(0 50 50)"/><line x1="50" y1="8" x2="50" y2="92" transform="rotate(45 50 50)"/><line x1="50" y1="8" x2="50" y2="92" transform="rotate(90 50 50)"/><line x1="50" y1="8" x2="50" y2="92" transform="rotate(135 50 50)"/></g></svg>
+    <span id="__ID__-brand" style="font-size:30px;font-weight:700;line-height:1.2;white-space:nowrap;min-width:0">Claude</span>
+   </div>
+   <div id="__ID__-big" class="__ID__-t" style="left:20px;top:44px;right:20px;font-size:120px;font-weight:900;line-height:1.2">7</div>
+   <div id="__ID__-biglabel" class="__ID__-clamp" style="position:absolute;left:20px;top:190px;right:20px">эффектов · одна запись</div>
+  </div></div>
+
+  <!-- a2: компактная версия карточки a (ряд под подбородком) -->
+  <div id="__ID__-w-a2" class="__ID__-w"><div id="__ID__-g-a2" class="__ID__-g">
+   <div style="position:absolute;left:20px;right:16px;top:0;bottom:0;display:flex;align-items:center;gap:14px">
+    <span id="__ID__-big2" style="flex:none;font-size:72px;font-weight:900;line-height:1.25;white-space:nowrap">7</span>
+    <span id="__ID__-biglabel2" class="__ID__-clamp" style="flex:1;min-width:0;line-height:1.15">эффектов · одна запись</span>
+   </div>
+  </div></div>
+
+  <!-- b: диаграмма -->
+  <div id="__ID__-w-b" class="__ID__-w"><div id="__ID__-g-b" class="__ID__-g">
+   <div id="__ID__-stat" class="__ID__-t" style="left:20px;top:16px;right:20px;font-size:28px;font-weight:700;line-height:1.2">Рендер в 4K</div>
+   <div class="__ID__-bars">
+    <i class="__ID__-bar" style="height:50px"></i><i class="__ID__-bar" style="height:82px"></i><i class="__ID__-bar" style="height:64px"></i><i class="__ID__-bar" style="height:100px"></i><i class="__ID__-bar" style="height:88px"></i><i class="__ID__-bar" style="height:122px"></i><i class="__ID__-bar" style="height:104px"></i><i class="__ID__-bar" style="height:140px"></i>
+   </div>
+  </div></div>
+
+  <!-- c: прогресс -->
+  <div id="__ID__-w-c" class="__ID__-w"><div id="__ID__-g-c" class="__ID__-g">
+   <div style="position:absolute;left:20px;right:20px;top:10px;height:34px;display:flex;align-items:center;gap:8px">
+    <span style="flex:none;width:12px;height:12px;border-radius:6px;background:#E5392B;display:block"></span>
+    <span id="__ID__-plabel" style="flex:1;min-width:0;font-size:28px;font-weight:700;line-height:1.2;white-space:nowrap">Рендеринг</span>
+   </div>
+   <div style="position:absolute;left:20px;right:20px;top:54px;height:34px;display:flex;align-items:center;gap:10px">
+    <div style="flex:1;min-width:0;height:14px;border-radius:7px;background:rgba(0,0,0,.12);overflow:hidden"><div id="__ID__-fill" style="width:100%;height:14px;border-radius:7px;background:linear-gradient(90deg,#FF9A3C,#E5392B);transform-origin:0% 50%"></div></div>
+    <span id="__ID__-pct" style="flex:none;font-size:28px;font-weight:700;color:#C73225;line-height:1.2">64%</span>
+   </div>
+  </div></div>
+
+  <!-- d: профиль -->
+  <div id="__ID__-w-d" class="__ID__-w"><div id="__ID__-g-d" class="__ID__-g">
+   <div style="position:absolute;left:16px;top:16px;width:64px;height:64px;border-radius:32px;border:2px solid #fff;overflow:hidden;background:#d8d8dc"><img id="__ID__-av" src="@@F2@@" alt="" style="position:absolute;left:0;top:0;width:540px;height:960px;max-width:none"></div>
+   <div id="__ID__-name" class="__ID__-t" style="left:92px;top:12px;right:14px;font-size:28px;font-weight:700;line-height:1.2">Твоё имя</div>
+   <div id="__ID__-handle" class="__ID__-t" style="left:92px;top:50px;right:14px;font-size:28px;font-weight:500;line-height:1.2;letter-spacing:-.02em;color:#555">@твой_ник</div>
+  </div></div>
+
+  <!-- e: кольцо -->
+  <div id="__ID__-w-e" class="__ID__-w"><div id="__ID__-g-e" class="__ID__-g" style="border-radius:120px">
+   <svg width="200" height="200" viewBox="0 0 200 200" style="position:absolute;left:18px;top:18px">
+    <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(0,0,0,.12)" stroke-width="16"/>
+    <circle id="__ID__-arc" cx="100" cy="100" r="80" fill="none" stroke="#2FBF5B" stroke-width="16" stroke-linecap="round" stroke-dasharray="502.65" stroke-dashoffset="502.65" transform="rotate(-90 100 100)"/>
+   </svg>
+   <div id="__ID__-ring" style="position:absolute;left:46px;top:0;width:144px;height:100%;display:flex;align-items:center;justify-content:center;font-size:56px;font-weight:900;white-space:nowrap;line-height:1.1">4K</div>
+  </div></div>
+
+  <!-- p: пилюля -->
+  <div id="__ID__-w-p" class="__ID__-w"><div id="__ID__-g-p" class="__ID__-g" style="border-radius:36px">
+   <div id="__ID__-pillrow" style="position:absolute;left:0;top:0;width:100%;height:100%;padding:0 24px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:32px;font-weight:700;white-space:nowrap">
+    <svg class="__ID__-star" width="30" height="30" viewBox="0 0 100 100"><g stroke="#D97757" stroke-width="12" stroke-linecap="round"><line x1="50" y1="8" x2="50" y2="92" transform="rotate(0 50 50)"/><line x1="50" y1="8" x2="50" y2="92" transform="rotate(45 50 50)"/><line x1="50" y1="8" x2="50" y2="92" transform="rotate(90 50 50)"/><line x1="50" y1="8" x2="50" y2="92" transform="rotate(135 50 50)"/></g></svg>
+    <span id="__ID__-pilltext">Edited by <span style="color:#9A5340">Claude</span></span>
+   </div>
+  </div></div>
+
+ </div>
+</div>
+<script>
+(function(){
+ const P=/*@@P@@*/{};
+ const tl=gsap.timeline({paused:true});
+ const D=P.dur, F=P.face, W=P.words||[];
+ const ACC=P.accent||'#D97757';
+ // акцент для текста на стекле темнее: иначе контраст с карточкой ниже 3:1
+ const DARK=(function(){const m=/^#([0-9a-f]{6})$/i.exec(String(ACC).trim());if(!m)return ACC;const n=parseInt(m[1],16);const c=function(v){return Math.round(v*0.68);};return 'rgb('+c(n>>16&255)+','+c(n>>8&255)+','+c(n&255)+')';})();
+ const $=function(n){return document.getElementById('__ID__-'+n);};
+ const len=function(s){return [...String(s)].length;};
+ const fit=function(s,mx,mn,width,k){return Math.max(mn,Math.min(mx,Math.floor(width/(Math.max(1,len(s))*k))));};
+
+ // ---------- тексты из параметров ----------
+ // Длинную строку сначала ужимаем до 28 px, потом режем по символам с «…» (оценка ширины: Inter ~0,58 em на символ).
+ const cut=function(str,n){const a=[...String(str)]; if(a.length<=n) return a.join(''); return a.slice(0,Math.max(1,n-1)).join('').replace(/\s+$/,'')+'\u2026';};
+ const one=function(el,str,width,fs0,fsMin,k){
+  let fs=fs0; const n=len(str);
+  if(n*fs*k>width) fs=Math.max(fsMin,Math.floor(width/(n*k)));
+  el.textContent=cut(str,Math.max(1,Math.floor(width/(fs*k))));
+  el.style.fontSize=fs+'px';
+ };
+ const multi=function(el,str,width,fs,k,lines){
+  const per=Math.max(3,Math.floor(width/(fs*k)));
+  el.textContent=cut(str,Math.max(4,per*lines-(lines>1?6:0)));
+ };
+ document.querySelectorAll('.__ID__-star g').forEach(function(g){g.setAttribute('stroke',ACC);});
+
+ // пилюля: подстрока pillAccent красится в accent
+ const ptxt0=String(P.pill), acc=String(P.pillAccent||'');
+ let pfs=32;
+ let pw=len(ptxt0)*pfs*0.6+40+56;
+ if(pw>900){pfs=Math.max(28,Math.floor(32*900/pw)); pw=900;}
+ const ptxt=cut(ptxt0,Math.max(4,Math.floor((900-96)/(pfs*0.6))));
+ pw=Math.round(Math.max(300,Math.min(900,len(ptxt)*pfs*0.6+40+56)));
+ const pt=$('pilltext');
+ pt.textContent='';
+ const ai=acc?ptxt.indexOf(acc):-1;
+ if(ai>=0){
+  pt.appendChild(document.createTextNode(ptxt.slice(0,ai)));
+  const sp=document.createElement('span'); sp.style.color=DARK; sp.textContent=acc; pt.appendChild(sp);
+  pt.appendChild(document.createTextNode(ptxt.slice(ai+acc.length)));
+ } else pt.appendChild(document.createTextNode(ptxt));
+
+ // аватар: кадр записи, подрезанный по лицу
+ (function(){
+  const av=$('av'), k=0.6*64/(F.w/2);
+  av.style.width=(540*k)+'px'; av.style.height=(960*k)+'px';
+  av.style.left=(32-(F.cx/2)*k-2)+'px'; av.style.top=(32-(F.cy/2)*k-2)+'px';
+ })();
+
+ // ---------- раскладка ----------
+ const M=40, GAP=18, SG=6, CGAP=12, NMIN=260;
+ const dx=F.w*0.06, dy=F.h*0.06;
+ const gl=F.x-dx, gr=F.x+F.w+dx, gt=F.y-dy, gb=F.y+F.h+dy;
+ const L=F.x-40, R=1040-(F.x+F.w);
+ const H={a:300,a2:100,b:240,c:100,d:100,e:240};
+  const rects={};
+ function place(k,x,y,s,Wn,Hn){
+  const w=$('w-'+k), g=$('g-'+k);
+  g.style.width=Wn+'px'; g.style.height=Hn+'px'; g.style.transform='scale('+s+')';
+  const X=Math.round(x), Y=Math.round(y), WW=Math.round(Wn*s), HH=Math.round(Hn*s);
+  w.style.left=X+'px'; w.style.top=Y+'px'; w.style.width=WW+'px'; w.style.height=HH+'px'; w.style.display='block';
+  rects[k]={x:X,y:Y,w:WW,h:HH,Wn:Wn};
+ }
+ const cyFace=F.y+F.h*0.5;
+ // колонка карточек шириной cw (до 300), масштаб s<1 только если места меньше NMIN
+ function stack(keys,x,s,cw){
+  const tot=keys.reduce(function(u,k){return u+H[k]*s;},0)+GAP*s*(keys.length-1);
+  let top=cyFace-tot/2;
+  if(tot<=960) top=Math.max(290,Math.min(1250-tot,top)); else top=Math.max(170,Math.min(1500-tot,top));
+  let y=top;
+  keys.forEach(function(k){
+   const Wn=(k==='e')?240:cw;
+   place(k,x+(cw*s-Wn*s)/2,y,s,Wn,H[k]);
+   y+=H[k]*s+GAP*s;
+  });
+ }
+ function colW(span){return Math.max(NMIN,Math.min(300,span));}
+ function colS(span){return Math.min(1,span/NMIN);}
+
+ const ph=pfs+32;
+ $('pillrow').style.fontSize=pfs+'px';
+ const pcx=Math.max(M+pw/2,Math.min(1040-pw/2,F.cx));
+ let mode;
+ if(L>=250&&R>=250) mode='two'; else if(L>=250||R>=250) mode='side'; else mode='compact';
+ let py;
+
+ if(mode==='two'){
+  const spL=gl-SG-M, spR=1040-gr-SG;
+  const cwL=colW(spL), cwR=colW(spR), sL=colS(spL), sR=colS(spR);
+  stack(['a','b'],M+Math.max(0,(spL-cwL*sL)/2),sL,cwL);
+  stack(['c','d','e'],gr+SG+Math.max(0,(spR-cwR*sR)/2),sR,cwR);
+  py=gb+22;
+ } else if(mode==='side'){
+  const left=L>=R;
+  const a0=left?M:gr+SG, a1=left?gl-SG:1040, span=a1-a0;
+  if(span>=2*NMIN+CGAP){
+   const cw=Math.min(300,(span-CGAP)/2);
+   const x1=a0+(span-(2*cw+CGAP))/2;
+   stack(['a','b'],x1,1,cw);
+   stack(['c','d','e'],x1+cw+CGAP,1,cw);
+  } else {
+   // узкая свободная сторона: один столбик; прогресс-полоска убирается (кольцо показывает то же самое)
+   const sc=colS(span), cw=colW(span);
+   stack(['a','b','d','e'],a0+Math.max(0,(span-cw*sc)/2),sc,cw);
+  }
+  py=gb+22;
+ } else {
+  const rowTop=gb+18;
+  const x0=(1080-(3*324+2*14))/2;
+  place('a2',x0,rowTop,1,324,100);
+  place('c',x0+338,rowTop,1,324,100);
+  place('d',x0+676,rowTop,1,324,100);
+  py=rowTop+100+14;
+ }
+ // пилюля не лезет на карточки; если снизу нет места — над головой
+ if(py+ph>1620&&gt-22-ph>=170) py=gt-22-ph;
+ for(let it=0;it<2;it++){
+  Object.keys(rects).forEach(function(k){
+   const r=rects[k];
+   if(r.x<pcx+pw/2+10&&r.x+r.w>pcx-pw/2-10&&r.y<py+ph+10&&r.y+r.h>py-10&&py<r.y+r.h) py=r.y+r.h+14;
+  });
+ }
+ place('p',pcx-pw/2,py,1,pw,ph);
+
+ // тексты карточек по реальной ширине (в натуральных пикселях карточки)
+ const wn=function(k,d){return rects[k]?rects[k].Wn:d;};
+ one($('brand'),P.brand,wn('a',300)-40-46,30,28,0.6);
+ one($('big'),P.big,wn('a',300)-40,120,36,0.66);
+ multi($('biglabel'),P.bigLabel,wn('a',300)-40,28,0.66,3);
+ one($('big2'),P.big,110,72,36,0.66);
+ multi($('biglabel2'),P.bigLabel,324-36-14-Math.min(110,len(P.big)*72*0.66),28,0.66,2);
+ one($('stat'),P.statTitle,wn('b',300)-40,28,28,0.58);
+ one($('plabel'),P.progressLabel,wn('c',300)-40-20,28,28,0.58);
+ one($('name'),P.name,wn('d',300)-92-14,28,28,0.58);
+ one($('handle'),P.handle,wn('d',300)-92-14,28,28,0.55);
+ one($('ring'),P.ring,140,56,28,0.66);
+
+ // ---------- анимация ----------
+ const IN=0.35, OUT=0.22, OUTAT=D-0.3;
+ const order=['a','a2','b','c','d','e','p'].filter(function(k){return rects[k];});
+ let prev=-0.1;
+ order.forEach(function(k,i){
+  const w=$('w-'+k);
+  let t=0.06+i*0.07;
+  if(W[i]&&typeof W[i].s==='number') t=Math.min(t+0.6,Math.max(t,W[i].s));
+  t=Math.min(Math.max(t,prev+0.04),Math.max(0.1,D-1.3));
+  prev=t;
+  tl.fromTo(w,{opacity:0,scale:0.85,transformOrigin:'50% 50%'},{opacity:1,scale:1,duration:IN,ease:'back.out(1.6)'},t);
+  const a=(i%2?-8:8), h=Math.max(0.3,(OUTAT-0.4)/2);
+  tl.fromTo(w,{y:0},{y:a,duration:h,ease:'sine.inOut'},0.4);
+  tl.fromTo(w,{y:a},{y:-a,duration:h,ease:'sine.inOut',immediateRender:false},0.4+h);
+  tl.fromTo(w,{opacity:1,scale:1},{opacity:0,scale:0.92,duration:OUT,ease:'power2.in',immediateRender:false},OUTAT);
+ });
+ const pEnd=W.length?Math.min(D-0.5,Math.max(1.2,W[W.length-1].e||0)):D-0.35;
+ const pDur=Math.max(0.6,pEnd-0.35);
+ tl.fromTo('.__ID__-bar',{scaleY:0},{scaleY:1,duration:0.32,ease:'back.out(1.4)',stagger:0.06},0.3);
+ tl.fromTo($('fill'),{scaleX:0.64},{scaleX:1,duration:pDur,ease:'power1.inOut'},0.35);
+ const pp={v:64};
+ tl.fromTo(pp,{v:64},{v:100,duration:pDur,ease:'power1.inOut',onUpdate:function(){$('pct').textContent=Math.round(pp.v)+'%';}},0.35);
+ tl.fromTo($('arc'),{strokeDashoffset:502.65},{strokeDashoffset:0,duration:pDur,ease:'power1.inOut'},0.4);
+
+ window.__timelines=window.__timelines||{}; window.__timelines['__ID__']=tl;
+})();
+</script>
+</template>

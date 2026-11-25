@@ -1,0 +1,189 @@
+<template>
+<style>
+#root{position:absolute;inset:0;overflow:hidden;font-family:'Inter',sans-serif}
+#root *{box-sizing:border-box}
+.__ID__-c{position:absolute;left:0;top:0;width:150px;height:250px;opacity:0}
+.__ID__-pic{position:absolute;left:0;top:0;width:100%;height:100%;border-radius:14px;border:4px solid #fff;box-shadow:0 12px 30px rgba(0,0,0,.4);overflow:hidden;background:#222}
+.__ID__-pic img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover}
+.__ID__-l{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);min-width:calc(100% - 20px);width:max-content;padding:5px 10px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:28px;font-weight:900;letter-spacing:-.03em;line-height:1.05;text-align:center;box-shadow:0 3px 10px rgba(0,0,0,.28)}
+.__ID__-t{display:flex;flex-direction:column;align-items:center;white-space:nowrap}
+.__ID__-t div{white-space:nowrap}
+.__ID__-l svg{display:block;flex:none}
+</style>
+<div id="root" data-composition-id="__ID__" data-start="0" data-duration="@@DUR@@" data-width="1080" data-height="1920">
+ <div id="__ID__-clip" class="clip" data-start="0" data-duration="@@DUR@@" style="position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden">
+  <div class="__ID__-c" id="__ID__-c0"><div class="__ID__-pic"><img src="@@F1@@" alt=""></div><div class="__ID__-l" style="background:#22C55E;color:#fff"><span class="__ID__-t">TODO</span></div></div>
+  <div class="__ID__-c" id="__ID__-c1"><div class="__ID__-pic"><img src="@@F2@@" alt=""></div><div class="__ID__-l" style="background:#3B82F6;color:#fff"><span class="__ID__-t">SWITCHES</span></div></div>
+  <div class="__ID__-c" id="__ID__-c2"><div class="__ID__-pic"><img src="@@F3@@" alt=""></div><div class="__ID__-l" style="background:#FFFFFF;color:#1d1d1f"><span class="__ID__-t">ОДНА ЗАПИСЬ</span></div></div>
+  <div class="__ID__-c" id="__ID__-c3"><div class="__ID__-pic"><img src="@@F4@@" alt=""></div><div class="__ID__-l" style="background:#FACC15;color:#1d1d1f"><span class="__ID__-t">7 ПРАВОК</span></div></div>
+  <div class="__ID__-c" id="__ID__-c4"><div class="__ID__-pic"><img src="@@F5@@" alt=""></div><div class="__ID__-l" style="background:#D97757;color:#fff"><span class="__ID__-t">CLAUDE</span></div></div>
+  <div class="__ID__-c" id="__ID__-c5"><div class="__ID__-pic"><img src="@@F6@@" alt=""></div><div class="__ID__-l" style="background:#9CA3AF;color:#fff"><span class="__ID__-t">GLASS UI</span></div></div>
+ </div>
+</div>
+<script>
+(function(){
+ const P=/*@@P@@*/{};
+ const tl=gsap.timeline({paused:true});
+ const D=P.dur, F=P.face;
+ const IN=0.28, OUT=0.28;
+ const N=6, PUL=1.05;                    // PUL: запас на «удар» карточки по слову
+ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+ // ---------- Карточки и подписи из параметров ----------
+ const DEF=[['TODO','#22C55E'],['SWITCHES','#3B82F6'],['ОДНА ЗАПИСЬ','#FFFFFF'],['7 ПРАВОК','#FACC15'],['CLAUDE','#D97757'],['GLASS UI','#9CA3AF']];
+ const covers=Array.isArray(P.covers)?P.covers:[];
+ const cards=[], lbls=[], texts=[];
+ for(let i=0;i<N;i++){
+   const el=document.getElementById('__ID__-c'+i);
+   cards.push(el);
+   lbls.push(el.querySelector('.__ID__-l'));
+   texts.push(el.querySelector('.__ID__-t'));
+ }
+ function lum(hex){
+   let h=String(hex||'').replace('#','');
+   if(h.length===3) h=h.split('').map(c=>c+c).join('');
+   if(!/^[0-9a-fA-F]{6}$/.test(h)) return 0;
+   const r=parseInt(h.slice(0,2),16), g=parseInt(h.slice(2,4),16), b=parseInt(h.slice(4,6),16);
+   const f=v=>{v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);};
+   return 0.2126*f(r)+0.7152*f(g)+0.0722*f(b);
+ }
+ const labelOf=[], colorOf=[];
+ for(let i=0;i<N;i++){
+   const c=covers[i]||{};
+   labelOf.push(String(c.label!=null&&String(c.label).length?c.label:DEF[i][0]));
+   colorOf.push(String(c.color||DEF[i][1]));
+ }
+
+ // ---------- Геометрия орбиты ----------
+ const ROT_A=-8*Math.PI/180, ROT_B=-3*Math.PI/180;
+ const TOPMIN=170, BOT=1590;
+ const browY=F.y+0.33*F.h;                // линия бровей: ниже неё над лицом ничего нет
+ const fy1=F.y+F.h*1.06;                  // низ запретной зоны (лицо +6 %)
+
+ // Крайние точки орбиты по вертикали относительно её центра (с учётом наклона и глубины).
+ function ext(ch,rx,ry,rot){
+   let mn=1e9, mx=-1e9;
+   for(let j=0;j<120;j++){
+     const th=j*Math.PI/60, s=Math.sin(th);
+     const x=rx*Math.cos(th), y=ry*s;
+     const Y=x*Math.sin(rot)+y*Math.cos(rot);
+     const hh=ch*(0.9+0.18*s)*PUL/2;
+     mn=Math.min(mn,Y-hh); mx=Math.max(mx,Y+hh);
+   }
+   return {mn:mn, mx:mx};
+ }
+ // Горизонталь: полуось по ширине головы, но кольцо целиком в кадре; центр не уезжает от головы дальше 60 px.
+ function horiz(cw){
+   const hw=cw*1.08*PUL/2+6;
+   const rx0=Math.max(F.w*1.1,cw*2.3);
+   const c=clamp(540,F.cx-60,F.cx+60);
+   const cap=Math.min(c-40-hw,1040-hw-c);
+   const rx=Math.max(cw*1.3,Math.min(rx0,cap));
+   return {rx:rx, cx:clamp(F.cx,40+hw+rx,1040-hw-rx)};
+ }
+
+ const cw0=clamp(Math.round(F.w*0.42),120,190);
+ let G=null;
+ // Режим A: орбита над головой; передние карточки заканчиваются на линии бровей.
+ for(let k=1;k>=0.749&&!G;k-=0.05){
+   const cw=Math.round(cw0*k), ch=Math.round(cw*5/3), h=horiz(cw);
+   for(let ry=ch*0.45;ry>=ch*0.18;ry-=3){
+     const e=ext(ch,h.rx,ry,ROT_A);
+     const cy=browY-e.mx;
+     if(cy+e.mn>=TOPMIN){ G={mode:'A',cw:cw,ch:ch,rx:h.rx,ry:ry,cx:h.cx,cy:cy,rot:ROT_A}; break; }
+   }
+ }
+ // Режим B: над головой места нет — орбита на уровне плеч, под подбородком.
+ if(!G){
+   for(let cw=cw0;cw>=100;cw-=4){
+     const ch=Math.round(cw*5/3), h=horiz(cw), ry=Math.max(8,ch*0.09+3);
+     const e=ext(ch,h.rx,ry,ROT_B);
+     const cy=fy1+8-e.mn;
+     if(cy+e.mx<=BOT||cw<=100){ G={mode:'B',cw:cw,ch:ch,rx:h.rx,ry:ry,cx:h.cx,cy:cy,rot:ROT_B}; break; }
+   }
+ }
+
+ // ---------- Размеры карточек и подписи ----------
+ const cw=G.cw, ch=G.ch;
+ const fs=clamp(Math.round(cw*0.2),28,38);
+const cap=Math.max(9,Math.floor((1.4*cw-20)/(fs*0.68)));   // символов в строке подписи
+ function wrap(str,n){
+   const words=String(str).trim().split(/\s+/).filter(Boolean).map(w=>{ const c=[...w]; return c.length>n?c.slice(0,n-1).join('')+'\u2026':w; });
+   const lines=[]; let cur='';
+   words.forEach(w=>{
+     if(!cur) cur=w;
+     else if([...(cur+' '+w)].length<=n) cur+=' '+w;
+     else { lines.push(cur); cur=w; }
+   });
+   if(cur) lines.push(cur);
+   if(lines.length>2){
+     let l=[...lines[1]];
+     if(l[l.length-1]!=='\u2026'){ if(l.length>=n) l=l.slice(0,n-1); l.push('\u2026'); }
+     lines.length=2; lines[1]=l.join('');
+   }
+   return lines.length?lines:[''];
+ }
+ const CHECK='<svg width="'+Math.round(fs*0.8)+'" height="'+Math.round(fs*0.8)+'" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+ cards.forEach((el,i)=>{
+   el.style.width=cw+'px'; el.style.height=ch+'px';
+   el.querySelector('.__ID__-pic').style.borderRadius=Math.round(cw*0.094)+'px';
+   const l=lbls[i];
+   l.style.background=colorOf[i];
+   // белый текст, пока контраст не ниже 3:1 (крупный текст), иначе тёмный
+   l.style.color=1.05/(lum(colorOf[i])+0.05)>=3?'#fff':'#1d1d1f';
+   l.setAttribute('data-layout-allow-safe-zone',''); l.setAttribute('data-layout-allow-overlap','');
+   texts[i].setAttribute('data-layout-allow-safe-zone',''); texts[i].setAttribute('data-layout-allow-overlap','');
+   const pic=el.querySelector('.__ID__-pic');
+   pic.setAttribute('data-layout-allow-occlusion','');
+   pic.querySelector('img').setAttribute('data-layout-allow-occlusion','');
+   l.style.fontSize=fs+'px';
+   // подпись в две строки максимум; слишком длинное режется с многоточием, а не клипается краем блока
+   texts[i].textContent='';
+   wrap(labelOf[i],cap).forEach(t=>{ const d=document.createElement('div'); d.textContent=t; d.setAttribute('data-layout-allow-overlap',''); d.setAttribute('data-layout-allow-safe-zone',''); texts[i].appendChild(d); });
+   if(i===0&&[...labelOf[i]].length<=9) l.insertAdjacentHTML('beforeend',CHECK);   // галочка на первой карточке, как в исходнике
+ });
+ gsap.set(cards,{xPercent:-50,yPercent:-50});
+
+ // ---------- Расстановка по орбите ----------
+ const S={a:-75*Math.PI/180,k:0,g:0,p0:0,p1:0,p2:0,p3:0,p4:0,p5:0};
+ const cr=Math.cos(G.rot), sr=Math.sin(G.rot);
+ function place(){
+   const k=S.k, a=S.a, g=S.g;
+   for(let i=0;i<N;i++){
+     const th=a+i*Math.PI/3, s=Math.sin(th);
+     const x=G.rx*Math.cos(th), y=G.ry*s;
+     const X=G.cx+x*cr-y*sr, Y=G.cy+x*sr+y*cr;
+     const sc=(0.9+0.18*s)*(0.3+0.7*k)*(1+0.05*S['p'+i]);
+     gsap.set(cards[i],{x:G.cx+(X-G.cx)*k,y:G.cy+(Y-G.cy)*k,scale:sc,opacity:(0.775+0.225*s)*g,zIndex:Math.round(100+s*50)});
+   }
+ }
+ place();
+
+ // ---------- Анимация ----------
+ const SPIN=150*Math.PI/180;
+ tl.to(S,{a:S.a+SPIN,duration:D,ease:'none',onUpdate:place},0);
+ // Разлёт из центра орбиты (не из головы: центр орбиты не на лице) и уход обратно.
+ tl.fromTo(S,{k:0},{k:1,duration:IN,ease:'power2.out',onUpdate:place},0);
+ tl.fromTo(S,{g:0},{g:1,duration:IN-0.04,ease:'power2.in',onUpdate:place},0);
+ tl.fromTo(S,{k:1},{k:0,duration:OUT,ease:'power2.in',onUpdate:place,immediateRender:false},D-OUT);
+ tl.fromTo(S,{g:1},{g:0,duration:OUT-0.03,ease:'power2.out',onUpdate:place,immediateRender:false},D-OUT);
+
+ // «Удар» по словам: ближайшая к зрителю карточка на миг крупнее. Без слов орбита просто кружит.
+ const ws=(P.words||[]).map(w=>w.s).filter(s=>s>=IN+0.15&&s<=D-OUT-0.3);
+ const hits=[];
+ ws.forEach(s=>{ if(!hits.length||s>=hits[hits.length-1]+0.4) hits.push(s); });
+ hits.slice(0,5).forEach(t=>{
+   const a=-75*Math.PI/180+SPIN*(t/D);
+   let best=0, bs=-2;
+   for(let i=0;i<N;i++){ const s=Math.sin(a+i*Math.PI/3); if(s>bs){ bs=s; best=i; } }
+   const key='p'+best;
+   const up={}; up[key]=1; up.duration=0.1; up.ease='power2.out'; up.onUpdate=place;
+   const dn={}; dn[key]=0; dn.duration=0.22; dn.ease='power2.inOut'; dn.onUpdate=place;
+   tl.to(S,up,t);
+   tl.to(S,dn,t+0.1);
+ });
+
+ window.__timelines=window.__timelines||{}; window.__timelines['__ID__']=tl;
+})();
+</script>
+</template>

@@ -1,0 +1,138 @@
+<template>
+<style>
+#root{position:absolute;inset:0;overflow:hidden;font-family:'Inter',sans-serif}
+#root *{box-sizing:border-box}
+#__ID__-card{position:absolute;left:120px;top:960px;width:680px;height:304px;border-radius:24px;background:rgba(18,18,20,.9);border:2px solid rgba(255,255,255,.1);box-shadow:0 18px 44px rgba(0,0,0,.5);color:#fff;opacity:0}
+#__ID__-head{position:absolute;left:26px;top:0;right:26px;height:60px;display:flex;align-items:center;gap:14px;font-size:30px;font-weight:700;white-space:nowrap}
+#__ID__-dot{flex:none;width:16px;height:16px;border-radius:8px;background:#FF4D4D;display:block}
+#__ID__-title{flex:none}
+#__ID__-cnt{flex:none;margin-left:auto;font-family:'JetBrains Mono',monospace;font-weight:400;font-size:28px;color:#9A9A9A}
+.__ID__-row{position:absolute;left:26px;right:26px;height:46px;display:flex;align-items:center;gap:16px;font-size:28px;color:#8A8A8A;white-space:nowrap}
+.__ID__-ck{position:relative;flex:none;width:32px;height:32px;border-radius:16px;border:2px solid #666}
+.__ID__-ck svg{position:absolute;left:-2px;top:-2px;width:32px;height:32px}
+.__ID__-tx{flex:none}
+.__ID__-tag{flex:none;margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:28px;color:#4ADE80}
+</style>
+<div id="root" data-composition-id="__ID__" data-start="0" data-duration="@@DUR@@" data-width="1080" data-height="1920">
+ <div id="__ID__-clip" class="clip" data-start="0" data-duration="@@DUR@@" style="position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden">
+  <div id="__ID__-card">
+   <div id="__ID__-head"><span id="__ID__-dot"></span><span id="__ID__-title">Claude монтирует твой ролик</span><span id="__ID__-cnt">0 из 5</span></div>
+  </div>
+ </div>
+</div>
+<script>
+(function(){
+ const P=/*@@P@@*/{};
+ const tl=gsap.timeline({paused:true});
+ const IN=0.25, OUT=0.25, D=P.dur, F=P.face;
+ const SVG='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+ // Подгонка длины: режем строку с многоточием, пока она не влезет в maxW (измеряем по разметке)
+ const fit=(el,str,maxW,fs)=>{
+  str=String(str); el.textContent=str;
+  const w0=el.offsetWidth;
+  const ch=[...str];
+  const cut=n=>ch.slice(0,n).join('').replace(/\s+$/,'')+'\u2026';
+  if(w0===0){ const n=Math.max(3,Math.floor(maxW/(fs*0.62))); if(ch.length>n) el.textContent=cut(n-1); return; }
+  if(w0<=maxW) return;
+  let lo=1,hi=ch.length-1;
+  while(lo<hi){ const m=(lo+hi+1)>>1; el.textContent=cut(m); if(el.offsetWidth<=maxW) lo=m; else hi=m-1; }
+  el.textContent=cut(lo);
+ };
+
+ // Данные: от 1 до 6 строк, подписи справа могут отсутствовать.
+ const items=(Array.isArray(P.items)?P.items:[]).slice(0,6).map(String);
+ if(!items.length) items.push('Готово');
+ const tags=Array.isArray(P.tags)?P.tags:[];
+ const N=items.length;
+ const OF=P.of==null?'из':String(P.of);
+
+ const card=document.getElementById('__ID__-card');
+ const title=document.getElementById('__ID__-title');
+ const cnt=document.getElementById('__ID__-cnt');
+ const ttl=String(P.title==null?'':P.title);
+ title.style.fontSize=([...ttl].length<=28?30:28)+'px';
+ const setCnt=k=>{cnt.textContent=k+' '+OF+' '+N;};
+ setCnt(0);
+ title.textContent=ttl;
+
+ // Раскладка: карточка под подбородком (с запасом 6 % рамки головы), у левого края зоны.
+ const dy=F.h*0.06;
+ const faceBottom=F.y+F.h+dy;
+ const CW=680, CL=120;
+ const ROW_MAX=46;
+ // Ступени: сначала всё в безопасной зоне (низ до y 1248), потом до 1500, потом до 1620.
+ // [запас под подбородком, высота шапки, нижний отступ, предел низа, минимальная строка]
+ const TIERS=[[36,60,14,1248,40],[20,54,10,1248,38],[36,60,14,1500,40],[20,54,10,1620,36]];
+ let gap=36, HEAD=60, PAD=14, top=faceBottom+gap, row=36;
+ for(let k=0;k<TIERS.length;k++){
+  const t=TIERS[k];
+  const r=Math.floor((t[3]-(faceBottom+t[0])-t[1]-t[2])/N);
+  gap=t[0]; HEAD=t[1]; PAD=t[2]; top=faceBottom+gap;
+  if(r>=t[4]||k===TIERS.length-1){row=Math.max(36,Math.min(ROW_MAX,r));break;}
+ }
+ const H=HEAD+N*row+PAD;
+ card.style.left=CL+'px'; card.style.top=Math.round(top)+'px';
+ card.style.width=CW+'px'; card.style.height=H+'px';
+ document.getElementById('__ID__-head').style.height=HEAD+'px';
+ const INNER=CW-4-52; // ширина содержимого: карточка минус рамка и боковые отступы 26+26
+ fit(title,ttl,INNER-16-14-cnt.offsetWidth-14-6,parseInt(title.style.fontSize,10));
+
+ // Строки
+ const rows=[];
+ items.forEach((txt,i)=>{
+  const r=document.createElement('div');
+  r.className='__ID__-row';
+  r.style.top=(HEAD+i*row+(row-46)/2)+'px';
+  const ck=document.createElement('span'); ck.className='__ID__-ck'; ck.innerHTML=SVG;
+  const tx=document.createElement('span'); tx.className='__ID__-tx';
+  r.appendChild(ck); r.appendChild(tx);
+  card.appendChild(r);
+  let tagW=0;
+  const tg=tags[i];
+  if(tg!=null&&String(tg)!==''){
+   const t=document.createElement('span'); t.className='__ID__-tag'; r.appendChild(t);
+   fit(t,String(tg),Math.round(INNER*0.36),28);
+   tagW=t.offsetWidth||Math.round(INNER*0.3);
+  }
+  fit(tx,txt,INNER-32-16-(tagW?tagW+16:0)-6,28);
+  rows.push({r:r,ck:ck,svg:ck.querySelector('svg')});
+ });
+
+ // Появление и уход (кривые power3: первые и последние 0.05 с кадр чистый)
+ tl.fromTo(card,{opacity:0},{opacity:1,duration:IN,ease:'power3.in'},0);
+ tl.fromTo(card,{y:40},{y:0,duration:IN,ease:'power2.out'},0);
+ tl.fromTo(card,{opacity:1},{opacity:0,duration:OUT,ease:'power3.out',immediateRender:false},D-OUT);
+ tl.fromTo(card,{y:0},{y:18,duration:OUT,ease:'power2.in',immediateRender:false},D-OUT);
+ rows.forEach(o=>tl.set(o.svg,{scale:0,transformOrigin:'50% 50%'},0));
+
+ // Моменты галочек: по словам речи (равномерно по доступным словам), иначе по долям длительности
+ const LO=0.4, HI=D-0.55;
+ const ws=(Array.isArray(P.words)?P.words:[]).map(w=>w.s).filter(s=>s>=LO&&s<=HI);
+ const times=[];
+ for(let i=0;i<N;i++){
+  let t;
+  if(ws.length>=N){
+   const k=N>1?Math.round(i*(ws.length-1)/(N-1)):0;
+   t=ws[k];
+  }else{
+   t=LO+(N>1?i*(HI-LO)/(N-1):0);
+  }
+  if(i>0&&t<times[i-1]+0.2) t=times[i-1]+0.2;
+  times.push(t);
+ }
+ for(let i=N-1;i>=0;i--){ times[i]=Math.min(times[i],HI-(N-1-i)*0.2); }
+
+ const cp={n:0};
+ times.forEach((t,i)=>{
+  const o=rows[i];
+  tl.to(o.ck,{backgroundColor:'#22C55E',borderColor:'#22C55E',duration:0.12},t);
+  tl.to(o.svg,{scale:1,duration:0.22,ease:'back.out(2)'},t);
+  tl.to(o.r,{color:'#FFFFFF',duration:0.15},t);
+  tl.to(cp,{n:i+1,duration:0.1,ease:'none',immediateRender:false,onUpdate:function(){setCnt(Math.round(cp.n));}},t);
+ });
+
+ window.__timelines=window.__timelines||{}; window.__timelines['__ID__']=tl;
+})();
+</script>
+</template>

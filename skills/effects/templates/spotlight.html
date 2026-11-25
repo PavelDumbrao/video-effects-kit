@@ -1,0 +1,155 @@
+<template>
+<style>
+#root{position:absolute;inset:0;overflow:hidden;font-family:'Inter',sans-serif}
+#root *{box-sizing:border-box}
+#__ID__-dark{position:absolute;left:0;top:0;width:1080px;height:1920px;opacity:0;background:rgba(0,0,0,.9)}
+#__ID__-back{position:absolute;left:0;top:0;width:0;height:0;opacity:0;background:radial-gradient(closest-side,rgba(0,0,0,.74) 0%,rgba(0,0,0,.5) 55%,rgba(0,0,0,0) 100%)}
+#__ID__-neonwrap{position:absolute;left:0;top:0;width:1080px;opacity:0;text-align:center}
+.__ID__-line{display:block;width:fit-content;max-width:1080px;margin:0 auto;text-align:center;white-space:nowrap;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;color:#FF5FA8;text-shadow:0 0 8px #FFD0E6,0 0 26px #FF5FA8,0 0 64px #FF2D8A}
+</style>
+<div id="root" data-composition-id="__ID__" data-start="0" data-duration="@@DUR@@" data-width="1080" data-height="1920">
+ <div id="__ID__-clip" class="clip" data-start="0" data-duration="@@DUR@@" style="position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden">
+  <div id="__ID__-dark"></div>
+  <div id="__ID__-back"></div>
+  <div id="__ID__-neonwrap"><span id="__ID__-l1" class="__ID__-line">CLAUDE</span><span id="__ID__-l2" class="__ID__-line"></span></div>
+ </div>
+</div>
+<script>
+(function(){
+ const P=/*@@P@@*/{};
+ const tl=gsap.timeline({paused:true});
+ const D=P.dur, F=P.face;
+ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+ // ---------- Цвет: ядро света светлее, внешнее свечение глубже ----------
+ function parseHex(h){
+   let s=String(h||'').trim().replace('#','');
+   if(s.length===3) s=s.split('').map(c=>c+c).join('');
+   if(!/^[0-9a-fA-F]{6}$/.test(s)) s='FF5FA8';
+   return [parseInt(s.slice(0,2),16),parseInt(s.slice(2,4),16),parseInt(s.slice(4,6),16)];
+ }
+ const rgb=parseHex(P.color);
+ const mix=(c,t,k)=>c.map((v,i)=>Math.round(v+(t[i]-v)*k));
+ const css=c=>'rgb('+c[0]+','+c[1]+','+c[2]+')';
+ const base=css(rgb), core=css(mix(rgb,[255,255,255],0.72)), outer='rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',.7)';
+
+ // ---------- Луч света: эллипс вокруг головы и плеч, к краям темнеет до dim ----------
+ const dim=clamp(Number(P.dim==null?0.92:P.dim),0,1);
+ const rx=Math.round(clamp(0.75*F.w,230,620));
+ const ry=Math.round(clamp(0.72*F.h,330,900));
+ const cx=Math.round(F.cx);
+ const cy=Math.round(F.y+F.h*0.5+F.h*0.08);
+ const a=k=>'rgba(0,0,0,'+(dim*k).toFixed(3)+')';
+ const dark=document.getElementById('__ID__-dark');
+ dark.style.background='radial-gradient('+rx+'px '+ry+'px at '+cx+'px '+cy+'px,'
+   +a(0)+' 0%,'+a(0)+' 70%,'+a(0.10)+' 78%,'+a(0.38)+' 88%,'+a(0.76)+' 96%,'+a(1)+' 100%)';
+
+ // ---------- Неоновая надпись ----------
+ const text=String(P.neon==null?'CLAUDE':P.neon).trim()||'CLAUDE';
+ // Ширина строки в кеглях (Playfair 900 italic; калибровка по кадрам: «CLAUDE» ≈ 4.0 em).
+ function wEm(s){
+   let w=0;
+   for(const ch of s){
+     if(ch===' ') w+=0.28;
+     else if(/[iIlj1!.,:;'|]/.test(ch)) w+=0.34;
+     else if(/[0-9]/.test(ch)) w+=0.60;
+     else if(ch===ch.toUpperCase()&&ch!==ch.toLowerCase()) w+=0.68;
+     else w+=0.54;
+   }
+   return w+0.10;
+ }
+ const FS_MAX=170, LH=1.08, GAP=34;
+ const chin=F.y+F.h;
+ // Строки: одна или (если есть пробел) две сбалансированные; берём вариант с бо́льшим кеглем.
+ const sp=[];
+ for(let i=0;i<text.length;i++) if(text[i]===' ') sp.push(i);
+ const variants=[[text]];
+ if(sp.length){
+   let bi=sp[0], bd=1e9;
+   sp.forEach(i=>{const d=Math.abs(wEm(text.slice(0,i))-wEm(text.slice(i+1))); if(d<bd){bd=d;bi=i;}});
+   variants.push([text.slice(0,bi),text.slice(bi+1)]);
+ }
+ // Лучший кегль в заданных границах: bottom/top — по высоте, xmax — правая граница (ниже y 840 у соцсетей справа кнопки).
+ function plan(availH,maxW){
+   let res=null;
+   variants.forEach((ls,vi)=>{
+     const w=Math.max(...ls.map(wEm));
+     const f=Math.min(FS_MAX,maxW/w,availH/(ls.length*LH));
+     if(!res||f>res.fs*(vi?1.2:1)) res={lines:ls,fs:f,w:w};
+   });
+   return res;
+ }
+ // Надпись — неоновая вывеска над головой, пока там есть место: между y 190 и макушкой помещается
+ // строка (или две) кеглем не меньше 120 px. Предупреждение outside_safe_zone сверху допустимо.
+ // Иначе — под подбородком в безопасной зоне (до y 1248, x 120–780), а если и там тесно (крупный план) — в расширенной.
+ const up=plan(F.y-30-190,960), dn=plan(1248-(chin+GAP),660);
+ let pos, zone;
+ if(up.fs>=120){pos='up';zone=up;}
+ else if(dn.fs>=80){pos='down';zone=dn;}
+ else{
+   const up2=plan(F.y-30-190,960), dn2=plan(1500-(chin+GAP),780);
+   if(up2.fs>dn2.fs*1.15){pos='up';zone=up2;} else {pos='down';zone=dn2;zone.ext=true;}
+ }
+ const fs=Math.max(28,Math.floor(zone.fs)), lines=zone.lines;
+ const wrap=document.getElementById('__ID__-neonwrap');
+ const lh=Math.round(fs*LH);
+ [document.getElementById('__ID__-l1'),document.getElementById('__ID__-l2')].forEach((el,i)=>{
+   const ln=lines[i];
+   el.style.display=ln==null?'none':'block';
+   if(ln==null) return;
+   el.textContent=ln;
+   el.style.fontSize=fs+'px'; el.style.lineHeight=lh+'px'; el.style.height=lh+'px';
+   el.style.color=base;
+   const g=fs/170; // свечение масштабируется с кеглем
+   el.style.textShadow='0 0 '+Math.round(8*g)+'px '+core+',0 0 '+Math.round(26*g)+'px '+base+',0 0 '+Math.round(64*g)+'px '+outer;
+ });
+ const blockH=lh*lines.length;
+ const top=pos==='up'?(F.y-30-blockH):(chin+GAP);
+ wrap.style.top=Math.round(Math.max(170,top))+'px';
+ wrap.style.height=blockH+'px';
+ // По горизонтали — над лицом, но не дальше границ безопасной зоны (в расширенной зоне — шире).
+ const halfW=zone.w*fs/2, ext=!!zone.ext;
+ const xl=pos==='up'?60:(ext?40:120), xr=pos==='up'?1020:(ext?1040:780);
+ const tcx=Math.max(xl+halfW,Math.min(xr-halfW,ext?540:F.cx));
+ const ww=Math.ceil(zone.w*fs)+40;
+ wrap.style.width=ww+'px';
+ wrap.style.left=Math.round(tcx-ww/2)+'px';
+ // Тёмная подложка под надписью: держит контраст, если она легла на освещённую одежду.
+ const back=document.getElementById('__ID__-back');
+ const bw=Math.min(ww+240,1040), bh=blockH+170;
+ back.style.width=bw+'px'; back.style.height=bh+'px';
+ back.style.left=Math.round(Math.max(20,Math.min(1060-bw,tcx-bw/2)))+'px';
+ back.style.top=Math.round(Math.max(170,top)+blockH/2-bh/2)+'px';
+
+ // ---------- Время ----------
+ // Свет гаснет за 0.3 с, к концу возвращается за 0.25 с: края окна чистые.
+ const IN=0.3, OUT=0.25;
+ tl.fromTo(dark,{opacity:0},{opacity:1,duration:IN,ease:'power2.inOut'},0);
+ tl.fromTo(dark,{opacity:1},{opacity:0,duration:OUT,ease:'power2.inOut',immediateRender:false},D-OUT);
+ tl.fromTo(back,{opacity:0},{opacity:1,duration:IN,ease:'power2.inOut'},0);
+ tl.fromTo(back,{opacity:1},{opacity:0,duration:OUT,ease:'power2.inOut',immediateRender:false},D-OUT);
+
+ // Неон включается на слове речи, если оно начинается в первые 0.28 с; иначе сразу (0.14 с).
+ // Позже нельзя: надпись должна висеть не меньше 2 с, иначе check пишет line_unread.
+ let ign=0.14;
+ if(P.words&&P.words.length){
+   const w=P.words.find(x=>x.s>=0.14&&x.s<=0.28);
+   if(w) ign=w.s;
+ }
+ ign=Math.min(ign,D-1.0);
+ tl.set(wrap,{opacity:0},0);
+ // Мерцание «неоном»: ток пробивает лампу несколько раз и держится.
+ const fl=[[0,1],[0.04,0.25],[0.09,1],[0.14,0.3],[0.2,1],[0.25,0.55],[0.3,1]];
+ fl.forEach(f=>tl.set(wrap,{opacity:f[1]},ign+f[0]));
+ // Лёгкая пульсация света до начала ухода.
+ let k=0;
+ for(let t=ign+0.45;t+0.45<=D-OUT+0.001;t+=0.45){
+   tl.to(wrap,{opacity:(k%2?1:0.86),duration:0.45,ease:'sine.inOut'},t); k++;
+ }
+ // Уход: гасим надпись плавно в последние 0.25 с.
+ tl.to(wrap,{opacity:0,duration:OUT,ease:'power2.out'},D-OUT);
+
+ window.__timelines=window.__timelines||{}; window.__timelines['__ID__']=tl;
+})();
+</script>
+</template>

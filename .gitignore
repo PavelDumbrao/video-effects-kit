@@ -1,0 +1,18 @@
+# рабочие проекты и рендеры
+fx-project/
+*/fx-project/
+renders/
+*.mp4
+*.mov
+.hyperframes/
+node_modules/
+__pycache__/
+*.pyc
+.DS_Store
+# ключей в наборе нет, но на всякий случай
+.env
+.env.*
+# внутренние материалы сборки набора
+dev/
+# служебное состояние проверок дизайна
+.impeccable/

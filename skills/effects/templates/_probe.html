@@ -1,0 +1,70 @@
+<template>
+<style>
+#root{position:absolute;inset:0;overflow:hidden;font-family:'Inter',sans-serif}
+#root *{box-sizing:border-box}
+.__ID__-frame{position:absolute;border:6px solid #FFB300;border-radius:18px;opacity:0}
+.__ID__-plate{position:absolute;left:0;top:0;width:1080px;text-align:center;opacity:0}
+.__ID__-label{display:inline-block;padding:14px 30px;border-radius:16px;background:rgba(12,12,16,.72);color:#fff;font-family:'Inter',sans-serif;font-weight:700;font-size:44px;line-height:1.15;white-space:nowrap}
+.__ID__-pic{position:absolute;left:0;top:0;width:180px;height:320px;object-fit:cover;border-radius:14px;opacity:0;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+</style>
+<div id="root" data-composition-id="__ID__" data-start="0" data-duration="@@DUR@@" data-width="1080" data-height="1920">
+ <div id="__ID__-clip" class="clip" data-start="0" data-duration="@@DUR@@" style="position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden">
+   <div id="__ID__-frame" class="__ID__-frame"></div>
+   <div id="__ID__-plate" class="__ID__-plate"><span id="__ID__-label" class="__ID__-label">ПРОВЕРКА</span></div>
+   <img id="__ID__-pic" class="__ID__-pic" src="@@F1@@" alt="">
+ </div>
+</div>
+<script>
+(function(){
+ const P=/*@@P@@*/{};
+ const tl=gsap.timeline({paused:true});
+ const IN=0.2, OUT=0.2, D=P.dur, F=P.face, M=40, GAP=24;
+
+ // Рамка головы: лицо, расширенное на 6 % в каждую сторону.
+ const dx=F.w*0.06, dy=F.h*0.06;
+ const fx=F.x-dx, fy=F.y-dy, fw=F.w+2*dx, fh=F.h+2*dy;
+ const frame=document.getElementById('__ID__-frame');
+ frame.style.left=fx+'px'; frame.style.top=fy+'px';
+ frame.style.width=fw+'px'; frame.style.height=fh+'px';
+ frame.style.borderColor=P.color;
+
+ // Плашка: под подбородком, если влезает в зону до y=1500, иначе над головой.
+ const L=String(P.label);
+ const label=document.getElementById('__ID__-label');
+ label.textContent=L;
+ const n=[...L].length;
+ const fs=n<=12?44:Math.max(28,Math.round(44*12/n));
+ label.style.fontSize=fs+'px';
+ const ph=Math.round(fs*1.15)+28;
+ const below=fy+fh+GAP, above=fy-GAP-ph;
+ const fitsBelow=below+ph<=1500, fitsAbove=above>=170;
+ const plate=document.getElementById('__ID__-plate');
+ plate.style.top=(fitsBelow||!fitsAbove?below:above)+'px';
+
+ // Картинка 180×320 в свободном углу, со стороны, противоположной лицу; мало места — ужимаем, совсем мало — прячем.
+ const pic=document.getElementById('__ID__-pic');
+ const rightSide=F.cx<540;
+ const freeW=rightSide?(1080-M)-(fx+fw):fx-M;
+ const s=Math.min(1,freeW/180);
+ const showPic=s>=0.5;
+ if(showPic){
+   const w=Math.round(180*s), h=Math.round(320*s);
+   pic.style.width=w+'px'; pic.style.height=h+'px';
+   pic.style.left=(rightSide?1080-M-w:M)+'px';
+   pic.style.top='200px';
+ }
+
+ // Появление и уход по 0.2 с (кривая power3): в первые и последние 0.05 с кадр чистый.
+ tl.fromTo(frame,{opacity:0},{opacity:1,duration:IN,ease:'power3.in'},0);
+ tl.fromTo(frame,{opacity:1},{opacity:0,duration:OUT,ease:'power3.out',immediateRender:false},D-OUT);
+ tl.fromTo(plate,{opacity:0,y:14},{opacity:1,y:0,duration:IN,ease:'power3.in'},0);
+ tl.fromTo(plate,{opacity:1,y:0},{opacity:0,y:-10,duration:OUT,ease:'power3.out',immediateRender:false},D-OUT);
+ if(showPic){
+   tl.fromTo(pic,{opacity:0},{opacity:1,duration:IN,ease:'power3.in'},0);
+   tl.fromTo(pic,{opacity:1},{opacity:0,duration:OUT,ease:'power3.out',immediateRender:false},D-OUT);
+ }
+
+ window.__timelines=window.__timelines||{}; window.__timelines['__ID__']=tl;
+})();
+</script>
+</template>

@@ -1,0 +1,112 @@
+<template>
+<style>
+#root{position:absolute;inset:0;overflow:hidden;font-family:'Inter',sans-serif}
+#root *{box-sizing:border-box}
+#__ID__-panel{position:absolute;left:0;top:0;width:580px;height:200px;border-radius:26px;background:rgba(255,255,255,.72);border:2px solid #fff;box-shadow:0 16px 44px rgba(20,20,40,.32);color:#1d1d1f;opacity:0}
+.__ID__-row{position:absolute;left:24px;right:24px;height:56px;display:flex;align-items:center;gap:16px;font-size:30px;font-weight:700;white-space:nowrap}
+.__ID__-ic{flex:none;width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.__ID__-ic svg{display:block;flex:none}
+.__ID__-tx{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.__ID__-tg{flex:none;position:relative;width:86px;height:50px;border-radius:25px;background:#D1D1D6}
+.__ID__-kn{position:absolute;left:4px;top:4px;width:42px;height:42px;border-radius:21px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+</style>
+<div id="root" data-composition-id="__ID__" data-start="0" data-duration="@@DUR@@" data-width="1080" data-height="1920">
+ <div id="__ID__-clip" class="clip" data-start="0" data-duration="@@DUR@@" style="position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden">
+  <div id="__ID__-panel">
+   <div class="__ID__-row" style="top:14px"><span class="__ID__-ic" style="background:#FFCC00"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="6" fill="#fff"/><g stroke="#fff" stroke-width="3" stroke-linecap="round"><line x1="16" y1="2" x2="16" y2="6"/><line x1="16" y1="26" x2="16" y2="30"/><line x1="2" y1="16" x2="6" y2="16"/><line x1="26" y1="16" x2="30" y2="16"/><line x1="6" y1="6" x2="9" y2="9"/><line x1="23" y1="23" x2="26" y2="26"/><line x1="6" y1="26" x2="9" y2="23"/><line x1="23" y1="9" x2="26" y2="6"/></g></svg></span><span class="__ID__-tx">Хороший свет</span><span class="__ID__-tg"><i class="__ID__-kn"></i></span></div>
+   <div class="__ID__-row" style="top:72px"><span class="__ID__-ic" style="background:#8B5CF6"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.7L12 17.6 6 20.9l1.3-6.7-5-4.7 6.8-.8z" fill="#fff"/></svg></span><span class="__ID__-tx">Главный герой</span><span class="__ID__-tg"><i class="__ID__-kn"></i></span></div>
+   <div class="__ID__-row" style="top:130px"><span class="__ID__-ic" style="background:#FF9500"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="none" stroke="#fff" stroke-width="3"/><path d="M10 16.5l4.2 4.2L22 12.2" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="__ID__-tx">Edited by Claude</span><span class="__ID__-tg"><i class="__ID__-kn"></i></span></div>
+  </div>
+ </div>
+</div>
+<script>
+(function(){
+ const P=/*@@P@@*/{};
+ const tl=gsap.timeline({paused:true});
+ const D=P.dur, F=P.face;
+ const IN=0.25, OUT=0.25;
+ const ON=P.on||'#34C759';
+
+ // Строки: берём до трёх подписей из параметров, лишние строки прячем.
+ const items=(Array.isArray(P.items)?P.items:[]).map(s=>String(s)).filter(s=>s.length).slice(0,3);
+ if(!items.length) items.push('Хороший свет');
+ const n=items.length;
+ const panel=document.getElementById('__ID__-panel');
+ const rows=panel.querySelectorAll('.__ID__-row');
+ const txs=panel.querySelectorAll('.__ID__-tx');
+ const ics=panel.querySelectorAll('.__ID__-ic');
+ const tgs=panel.querySelectorAll('.__ID__-tg');
+ const kns=panel.querySelectorAll('.__ID__-kn');
+ rows.forEach((r,i)=>{ if(i>=n) r.style.display='none'; });
+
+ // Вертикаль: верх на 40 px ниже подбородка, но не внутри запретной зоны (лицо +6 %).
+ const chin=F.y+F.h;
+ const minTop=Math.max(chin+40, chin+F.h*0.06+10);
+ let top=minTop;
+ // Шаг строк: обычно 58; если низ выходит за 1500, сначала поднимаем (не выше minTop), потом сжимаем строки до 52.
+ let pitch=58;
+ const hOf=p=>Math.round(p*n+(p/58)*26);
+ if(top+hOf(pitch)>1500){
+   top=Math.max(minTop,Math.min(top,1500-hOf(pitch)));
+ }
+ while(top+hOf(pitch)>1500 && pitch>52) pitch--;
+ if(top+hOf(pitch)>1620) top=1620-hOf(pitch);
+ const compact=pitch<56;
+ const ph=hOf(pitch);
+ const rowH=pitch-2, pad=Math.round(14*pitch/58);
+ const icS=Math.min(46,rowH-8);
+ const tgW=compact?78:86, tgH=compact?46:50, knS=tgH-8;
+ const fs=compact?28:30;
+ rows.forEach((r,i)=>{
+   r.style.top=(pad+i*pitch)+'px'; r.style.height=rowH+'px'; r.style.fontSize=fs+'px';
+   ics[i].style.width=icS+'px'; ics[i].style.height=icS+'px';
+   tgs[i].style.width=tgW+'px'; tgs[i].style.height=tgH+'px'; tgs[i].style.borderRadius=(tgH/2)+'px';
+   kns[i].style.width=knS+'px'; kns[i].style.height=knS+'px'; kns[i].style.borderRadius=(knS/2)+'px';
+ });
+ const knX=tgW-knS-8;
+
+ // Горизонталь: ширина по самой длинной подписи (не уже 580, не шире безопасной зоны, 770), по центру головы.
+ // Длинная подпись сначала ужимает кегль до 28, потом режется с многоточием (в самой строке, чтобы текст не обрезался краем блока).
+ const CW=0.58;                                   // ширина среднего символа Inter Bold, в долях кегля
+ const chrome=24+24+icS+16+16+tgW+4;
+ const maxLen=Math.max.apply(null,items.map(s=>[...s].length));
+ const pw=Math.round(Math.min(770,Math.max(580,chrome+maxLen*fs*CW)));
+ let fs2=fs;
+ if(chrome+maxLen*fs*CW>pw) fs2=28;
+ const cap=Math.max(6,Math.floor((pw-chrome)/(fs2*CW)));
+ items.forEach((s,i)=>{
+   const ch=[...s];
+   txs[i].textContent=ch.length>cap?ch.slice(0,cap-1).join('').replace(/\s+$/,'')+'\u2026':s;
+   txs[i].style.fontSize=fs2+'px';
+ });
+ let left=Math.round(F.cx-pw/2);
+ left=pw<=770?Math.max(120,Math.min(890-pw,left)):Math.max(40,Math.min(1040-pw,left));
+ panel.style.left=left+'px'; panel.style.top=Math.round(top)+'px';
+ panel.style.width=pw+'px'; panel.style.height=ph+'px';
+
+ // Появление снизу и уход вниз: в первые и последние 0.05 с кадр чистый.
+ tl.fromTo(panel,{opacity:0},{opacity:1,duration:IN,ease:'power3.in'},0);
+ tl.fromTo(panel,{y:200},{y:0,duration:IN,ease:'power2.out'},0);
+ tl.fromTo(panel,{opacity:1},{opacity:0,duration:OUT,ease:'power3.out',immediateRender:false},D-OUT);
+ tl.fromTo(panel,{y:0},{y:140,duration:OUT,ease:'power2.in',immediateRender:false},D-OUT);
+
+ // Время включения: на словах речи, если они есть, иначе равномерно. Последний тумблер доезжает до начала ухода.
+ const TG=0.2, last=D-OUT-TG-0.05;
+ const first=IN+0.3;
+ const ws=(P.words||[]).map(w=>w.s).filter(s=>s>=first&&s<=last);
+ const times=[];
+ for(let i=0;i<n;i++){
+   let t=(ws.length>=n)?ws[Math.round(i*(ws.length-1)/Math.max(1,n-1))]
+         :(n===1?(first+last)/2:first+i*(last-first)/(n-1));
+   if(i>0&&t<times[i-1]+0.3) t=times[i-1]+0.3;
+   times.push(Math.min(t,last-(n-1-i)*0.3));
+ }
+ times.forEach((t,i)=>{
+   tl.to(tgs[i],{backgroundColor:ON,duration:TG},t);
+   tl.to(kns[i],{x:knX,duration:TG,ease:'power2.out'},t);
+ });
+
+ window.__timelines=window.__timelines||{}; window.__timelines['__ID__']=tl;
+})();
+</script>
+</template>

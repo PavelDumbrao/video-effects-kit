@@ -1,0 +1,236 @@
+<template>
+<style>
+#root{position:absolute;inset:0;overflow:hidden;font-family:'Inter',sans-serif}
+#root *{box-sizing:border-box}
+#__ID__-title{position:absolute;left:0;top:0;width:1080px;text-align:center;white-space:nowrap;opacity:0}
+#__ID__-plate{display:inline-block;padding:0 28px;border-radius:20px;background:rgba(12,12,16,.78);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+#__ID__-brand{font-family:'Inter',sans-serif;font-weight:900;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.45)}
+#__ID__-accent{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;color:#FF7DB8;margin-left:12px;text-shadow:0 2px 8px rgba(0,0,0,.45)}
+#__ID__-panel{position:absolute;left:40px;top:0;width:1000px;height:290px;border-radius:22px;background:linear-gradient(135deg,#2E1747,#4B2177);box-shadow:0 14px 36px rgba(20,8,36,.55);overflow:hidden;font-family:'JetBrains Mono',monospace;font-size:28px;color:#E6D8FF;opacity:0}
+.__ID__-m{position:absolute;white-space:nowrap;font-size:28px}
+.__ID__-lb{position:absolute;left:24px;font-size:28px;color:#B9A2E0;white-space:nowrap}
+.__ID__-tr{position:absolute;border-radius:8px;overflow:hidden;background:rgba(255,255,255,.09)}
+.__ID__-in{position:absolute;left:0;top:0;width:100%;height:100%}
+.__ID__-film{display:flex}
+.__ID__-film img{width:12.5%;height:100%;object-fit:cover;object-position:50% 32%;display:block}
+.__ID__-chip{position:absolute;top:2px;border-radius:6px;font-size:28px;padding:0 12px;white-space:nowrap;color:#fff;opacity:0}
+#__ID__-head{position:absolute;left:0;top:0;width:1px;z-index:5;opacity:0}
+#__ID__-head i{position:absolute;left:-1px;top:0;width:3px;height:100%;background:#FF6FB5;box-shadow:0 0 12px 2px #FF6FB5;display:block}
+#__ID__-head b{position:absolute;left:-6px;top:0;width:13px;height:13px;border-radius:7px;background:#FF8EC6;box-shadow:0 0 10px 3px #FF6FB5;display:block}
+#__ID__-flash{position:absolute;left:0;top:0;width:100%;height:100%;background:#fff;opacity:0;z-index:6}
+</style>
+<div id="root" data-composition-id="__ID__" data-start="0" data-duration="@@DUR@@" data-width="1080" data-height="1920">
+ <div id="__ID__-clip" class="clip" data-start="0" data-duration="@@DUR@@" style="position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden">
+  <div id="__ID__-title"><span id="__ID__-plate"><b id="__ID__-brand">Claude</b><i id="__ID__-accent">рендерит</i></span></div>
+  <div id="__ID__-panel">
+   <div id="__ID__-hl" class="__ID__-m" style="left:24px;color:#fff"><span id="__ID__-dot" style="display:inline-block;width:14px;height:14px;border-radius:7px;background:#FF6FB5;margin-right:10px"></span><span id="__ID__-hlt">CLAUDE · РЕНДЕР</span></div>
+   <div id="__ID__-hr" class="__ID__-m" style="right:24px;color:#C9B4F0">4K · 30 FPS</div>
+   <div class="__ID__-lb">КЛИП</div>
+   <div class="__ID__-tr"><div class="__ID__-in __ID__-film"><img src="@@F1@@" alt=""><img src="@@F2@@" alt=""><img src="@@F3@@" alt=""><img src="@@F4@@" alt=""><img src="@@F5@@" alt=""><img src="@@F6@@" alt=""></div></div>
+   <div class="__ID__-lb">ТИТРЫ</div>
+   <div class="__ID__-tr"><div id="__ID__-chips" class="__ID__-in"></div></div>
+   <div class="__ID__-lb">ЦВЕТ</div>
+   <div class="__ID__-tr"><div class="__ID__-in" style="background:linear-gradient(90deg,#2DD4BF,#60A5FA,#A78BFA,#F472B6,#FB923C,#FACC15)"></div></div>
+   <div class="__ID__-lb">ЗВУК</div>
+   <div class="__ID__-tr"><div id="__ID__-wave" class="__ID__-in"></div></div>
+   <div id="__ID__-bar" class="__ID__-m" style="left:24px;height:14px;border-radius:7px;background:rgba(255,255,255,.14);overflow:hidden"><div id="__ID__-fill" style="width:100%;height:14px;border-radius:7px;background:linear-gradient(90deg,#FF6FB5,#FFB36B)"></div></div>
+   <div id="__ID__-pct" class="__ID__-m" style="right:24px;width:76px;text-align:right;color:#fff">65%</div>
+   <div id="__ID__-head"><i></i><b></b></div>
+   <div id="__ID__-flash"></div>
+  </div>
+ </div>
+</div>
+<script>
+(function(){
+ const P=/*@@P@@*/{};
+ const tl=gsap.timeline({paused:true});
+ const D=P.dur, F=P.face;
+ const IN=0.25, OUT=0.25;
+ const CW=16.8;                                   // ширина символа JetBrains Mono 28 px
+ const $=id=>document.getElementById('__ID__-'+id);
+ const trunc=(s,n)=>{ const a=[...String(s)]; return a.length>n?a.slice(0,Math.max(1,n-1)).join('').replace(/\s+$/,'')+'…':a.join(''); };
+ const strs=(v,def)=>{ const a=(Array.isArray(v)?v:(typeof v==='string'?[v]:[])).map(s=>String(s)).filter(s=>s.trim().length); return a.length?a:def; };
+
+ // Тексты из параметров.
+ const brand=String(P.brand!=null?P.brand:'Claude');
+ const accent0=String(P.titleAccent!=null?P.titleAccent:'рендерит');
+ const header=String(P.header!=null?P.header:'CLAUDE · РЕНДЕР');
+ const headerRight=String(P.headerRight!=null?P.headerRight:'4K · 30 FPS');
+ const tracks=strs(P.tracks,['КЛИП','ТИТРЫ','ЦВЕТ','ЗВУК']);
+ while(tracks.length<4) tracks.push(['КЛИП','ТИТРЫ','ЦВЕТ','ЗВУК'][tracks.length]);
+ const chipTx=strs(P.chips,['одна запись','/effects','7 правок']).slice(0,3);
+ const from=Math.max(0,Math.min(99,Math.round(Number(P.from!=null?P.from:65))||0));
+
+ // Размеры панели: обычный режим 290 px, тесный 234 px (шрифт везде остаётся 28 px).
+ const M_NORM={ph:290,pad:12,hh:34,g1:8,film:52,row:38,rg:6,g2:10,pb:30,th:64,fb:52,fa:56};
+ const M_COMP={ph:234,pad:8,hh:30,g1:4,film:34,row:34,rg:4,g2:6,pb:30,th:56,fb:46,fa:50};
+ const TG=8;                                      // зазор между заголовком и панелью
+ const fb=F.y+F.h+F.h*0.06;                       // низ запретной зоны (лицо +6 %)
+ let mode=M_NORM, showTitle=true, bottom=1500;
+ {
+   const need=m=>Math.max(1500,Math.ceil(fb+10+m.th+TG+m.ph));
+   if(need(M_NORM)<=1620){ mode=M_NORM; bottom=need(M_NORM); }
+   else if(need(M_COMP)<=1620){ mode=M_COMP; bottom=need(M_COMP); }
+   else { mode=M_COMP; bottom=1620; showTitle=false; }
+ }
+ const m=mode;
+ const panelTop=bottom-m.ph;
+ const titleTop=panelTop-TG-m.th;
+
+ // Заголовок: белый на тёмной плашке; кегль и длина подгоняются под ширину 1000.
+ let br=brand, ac=accent0, fsB=m.fb, fsA=m.fa;
+ const est=()=>[...br].length*fsB*0.66+[...ac].length*fsA*0.5+(ac.length?12:0)+56;
+ if(est()>1000){ const s=1000/est(); fsB=Math.max(28,Math.floor(fsB*s)); fsA=Math.max(28,Math.floor(fsA*s)); }
+ while(est()>1000 && ([...ac].length>1||[...br].length>1)){
+   if([...ac].length>=[...br].length) ac=trunc(ac,[...ac].length-1); else br=trunc(br,[...br].length-1);
+ }
+ $('brand').textContent=br; $('brand').style.fontSize=fsB+'px';
+ $('accent').textContent=ac; $('accent').style.fontSize=fsA+'px';
+ if(!ac.length) $('accent').style.display='none';
+ $('plate').style.height=m.th+'px'; $('plate').style.lineHeight=m.th+'px';
+ const title=$('title');
+ title.style.top=titleTop+'px';
+ if(!showTitle) title.style.display='none';
+
+ // Панель.
+ const panel=$('panel');
+ panel.style.top=panelTop+'px'; panel.style.height=m.ph+'px';
+
+ // Строка заголовка панели: слева и справа подгоняем под ширину 952.
+ const budget=Math.floor((952-14-10-24)/CW);
+ let hr=trunc(headerRight,Math.min([...headerRight].length,Math.floor(budget/2)));
+ let hl=trunc(header,Math.max(6,budget-[...hr].length));
+ $('hlt').textContent=hl; $('hr').textContent=hr;
+ for(const id of ['hl','hr']){ const e=$(id); e.style.top=m.pad+'px'; e.style.height=m.hh+'px'; e.style.lineHeight=m.hh+'px'; }
+
+ // Подписи дорожек и геометрия.
+ const lbs=panel.querySelectorAll('.__ID__-lb');
+ const trs=panel.querySelectorAll('.__ID__-tr');
+ const ins=panel.querySelectorAll('.__ID__-in');
+ const labels=tracks.slice(0,4).map(s=>trunc(s,7));
+ const LW=Math.max(...labels.map(s=>[...s].length),4)*CW+4;
+ const trL=Math.round(24+LW+16), trW=1000-24-trL;
+ const hs=[m.film,m.row,m.row,m.row];
+ const tops=[];
+ let y=m.pad+m.hh+m.g1;
+ hs.forEach((h,i)=>{ tops.push(y); y+=h+m.rg; });
+ const trBottom=tops[3]+hs[3];
+ hs.forEach((h,i)=>{
+   lbs[i].textContent=labels[i];
+   lbs[i].style.width=LW+'px'; lbs[i].style.top=tops[i]+'px'; lbs[i].style.height=h+'px'; lbs[i].style.lineHeight=h+'px';
+   trs[i].style.left=trL+'px'; trs[i].style.top=tops[i]+'px'; trs[i].style.width=trW+'px'; trs[i].style.height=h+'px';
+ });
+
+ // Плёнка: восемь ячеек, кадры по кругу (7-я и 8-я копируют 1-ю и 2-ю в коде, чтобы в разметке не было одинаковых src).
+ {
+   const film=panel.querySelector('.__ID__-film'), im=film.querySelectorAll('img');
+   film.appendChild(im[0].cloneNode(false)); film.appendChild(im[1].cloneNode(false));
+ }
+
+ // Блоки на дорожке титров: подписи из параметров, затем «бренд» и первое слово правой части шапки.
+ const nm=chipTx.length;
+ const capMain=Math.max(4,Math.floor((trW-12-(nm-1)*10-nm*24)/(nm*CW)));
+ const fill=[brand,headerRight.split(/\s+/)[0]].filter(s=>s.length).map(s=>trunc(s,8));
+ const chipList=chipTx.map(s=>trunc(s,capMain)).concat(fill);
+ const chipH=m.row-4;
+ const chipsBox=$('chips');
+ const chips=[];
+ let cx=6;
+ chipList.forEach((s,i)=>{
+   const w=Math.round([...s].length*CW+24);
+   if(cx+w>trW-6) return;
+   const el=document.createElement('div');
+   el.className='__ID__-chip';
+   el.textContent=s;
+   el.style.left=cx+'px'; el.style.width=w+'px'; el.style.height=chipH+'px'; el.style.lineHeight=chipH+'px';
+   el.style.background=(i%2===0)?'#E0457B':'#7C3AED';
+   chipsBox.appendChild(el);
+   chips.push({el:el,x:cx,main:i<chipTx.length});
+   cx+=w+10;
+ });
+
+ // Звуковая волна: одна линия-путь, высоты считаются формулой (без случайных чисел).
+ {
+   const NS='http://www.w3.org/2000/svg';
+   const svg=document.createElementNS(NS,'svg');
+   svg.setAttribute('width',trW); svg.setAttribute('height',m.row);
+   svg.setAttribute('viewBox','0 0 '+trW+' '+m.row);
+   svg.style.display='block';
+   const n=Math.floor((trW-6)/9), cy=m.row/2, maxH=m.row-4;
+   let d='';
+   for(let i=0;i<n;i++){
+     const a=Math.abs(Math.sin(i*0.9)*Math.cos(i*0.31+1)+0.3*Math.sin(i*2.3));
+     const h=Math.max(5,Math.min(maxH,maxH*(0.16+0.84*a)));
+     const x=5+i*9;
+     d+='M'+x+' '+(cy-h/2+2.5).toFixed(1)+'V'+(cy+h/2-2.5).toFixed(1);
+   }
+   const path=document.createElementNS(NS,'path');
+   path.setAttribute('d',d); path.setAttribute('stroke','#C9A6FF'); path.setAttribute('stroke-width','5');
+   path.setAttribute('stroke-linecap','round'); path.setAttribute('fill','none');
+   svg.appendChild(path);
+   $('wave').appendChild(svg);
+ }
+
+ // Полоса рендера и процент.
+ const barTop=trBottom+m.g2;
+ const bar=$('bar');
+ bar.style.top=Math.round(barTop+(m.pb-14)/2)+'px'; bar.style.width='864px';
+ const pct=$('pct');
+ pct.style.top=barTop+'px'; pct.style.height=m.pb+'px'; pct.style.lineHeight=m.pb+'px';
+ pct.textContent=from+'%';
+
+ // Бегунок: через дорожки, от левого края до правого.
+ const head=$('head');
+ head.style.top=(tops[0]-7)+'px'; head.style.height=(trBottom-tops[0]+14)+'px';
+
+ // Время. Бегунок идёт от tS до tE, на 100 % вспышка, затем уход панели.
+ const tS=0.4, tE=D-0.65, run=tE-tS;
+ tl.fromTo(panel,{opacity:0},{opacity:1,duration:IN,ease:'power3.in'},0);
+ tl.fromTo(panel,{y:70},{y:0,duration:IN,ease:'power2.out'},0);
+ tl.fromTo(title,{opacity:0},{opacity:1,duration:IN,ease:'power3.in'},0);
+ tl.fromTo(title,{y:-16},{y:0,duration:IN,ease:'power2.out'},0);
+ tl.set(ins,{scaleX:0,transformOrigin:'0% 50%'},0);
+ tl.to(ins,{scaleX:1,duration:0.3,ease:'power2.out',stagger:0.07},0.25);
+
+ tl.set(head,{x:trL,opacity:0},0);
+ tl.to(head,{opacity:1,duration:0.12},tS-0.05);
+ tl.to(head,{x:trL+trW,duration:run,ease:'none'},tS);
+ tl.to(head,{opacity:0,duration:0.15},tE);
+ tl.set('#__ID__-fill',{scaleX:from/100,transformOrigin:'0% 50%'},0);
+ tl.to('#__ID__-fill',{scaleX:1,duration:run,ease:'none'},tS);
+ const pp={v:from};
+ tl.to(pp,{v:100,duration:run,ease:'none',onUpdate:function(){ pct.textContent=Math.round(pp.v)+'%'; }},tS);
+ tl.to(pct,{color:'#4ADE80',duration:0.1},tE);
+ tl.to('#__ID__-flash',{opacity:0.5,duration:0.1},tE);
+ tl.to('#__ID__-flash',{opacity:0,duration:0.3},tE+0.1);
+
+ // Блоки на дорожке титров: подписи главных блоков — на словах речи, если слов хватает; иначе когда бегунок доходит до блока.
+ // Остальные появляются, когда бегунок проходит мимо.
+ const lo=0.6, hi=D-1.2;
+ const ws=(P.words||[]).map(w=>w.s).filter(s=>s>=lo&&s<=hi);
+ const mains=chips.filter(c=>c.main);
+ const useWords=ws.length>=mains.length&&mains.length>0;
+ let prev=lo-0.2;
+ chips.forEach(c=>{
+   let t=tS+(c.x/trW)*run-0.05;
+   if(c.main&&useWords){
+     const k=mains.indexOf(c);
+     t=Math.min(t,ws[Math.round(k*(ws.length-1)/Math.max(1,mains.length-1))]);
+   }
+   t=Math.max(t,lo);
+   if(c.main){ t=Math.max(t,prev+0.2); prev=t; }
+   t=Math.min(t,tE-0.3);
+   tl.set(c.el,{transformOrigin:'0% 50%'},0);
+   tl.fromTo(c.el,{opacity:0,scaleX:0.4},{opacity:1,scaleX:1,duration:0.2,ease:'back.out(1.8)'},t);
+ });
+
+ // Уход: панель и заголовок уезжают вниз и гаснут.
+ tl.fromTo(panel,{opacity:1},{opacity:0,duration:OUT,ease:'power3.out',immediateRender:false},D-OUT);
+ tl.fromTo(panel,{y:0},{y:70,duration:OUT,ease:'power2.in',immediateRender:false},D-OUT);
+ tl.fromTo(title,{opacity:1},{opacity:0,duration:OUT,ease:'power3.out',immediateRender:false},D-OUT);
+ tl.fromTo(title,{y:0},{y:30,duration:OUT,ease:'power2.in',immediateRender:false},D-OUT);
+
+ window.__timelines=window.__timelines||{}; window.__timelines['__ID__']=tl;
+})();
+</script>
+</template>
